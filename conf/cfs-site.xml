@@ -1,0 +1,31 @@
+<configuration>
+  <property>
+    <name>cfs.master.addr</name>
+    <value>192.168.0.11:17010,192.168.0.12:17010,192.168.0.13:17010</value>
+  </property>
+
+  <property>
+    <name>cfs.volume.name</name>
+    <value>cfstest</value>
+  </property>
+
+  <property>
+    <name>cfs.volume.owner</name>
+    <value>cfs</value>
+  </property>
+
+  <property>
+    <name>cfs.log.dir</name>
+    <value>/workspace/hdfs-sdk/logs</value>
+  </property>
+
+  <property>
+    <name>cfs.log.level</name>
+    <value>info</value>
+  </property>
+
+  <property>
+    <name>cfs.libsdk.path</name>
+    <value>/var/lib/libcfs.so</value>
+  </property>
+</configuration>
