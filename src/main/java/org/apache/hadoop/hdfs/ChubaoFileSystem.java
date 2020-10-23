@@ -15,6 +15,8 @@
 package org.apache.hadoop.hdfs;
 
 import io.chubao.fs.client.config.CfsConfig;
+import io.chubao.fs.client.config.StorageConfig;
+import io.chubao.fs.client.sdk.libsdk.CfsStatInfo;
 import io.chubao.fs.client.sdk.client.*;
 import io.chubao.fs.client.sdk.exception.*;
 import io.chubao.fs.client.sdk.libsdk.*;
@@ -84,6 +86,7 @@ public class ChubaoFileSystem extends FileSystem {
             //get config and set client
             StorageConfig sConf = getStorageConfig(cfg);
             storage = client.openFileStorage(sConf,client);
+
             uid = storage.getUid(userName);
             gid = storage.getGidByUser(userName);
             userHomePrefix = cfg.getUserHomePrefix();
@@ -515,11 +518,25 @@ public class ChubaoFileSystem extends FileSystem {
             log.debug("setOwner:" + path.toString() + " username:" + username + " groupname:" + groupname);
         }
         try {
+            System.out.println("--------begin set owner---------");
+            System.out.println("username:"+username+"   groupname:"+groupname);
             storage.chown(parsePath(path), username, groupname);
         } catch (CfsException ex) {
             log.error(ex.getMessage(), ex);
             throw new IOException(ex);
         }
+    }
+
+
+
+  @Override
+    public boolean setReplication(Path src, short replication) throws IOException {
+        return super.setReplication(src, replication);
+    }
+
+    @Override
+    public short getReplication(Path src) throws IOException {
+        return (short)storage.getReplicaNumber();
     }
 
     @Override
@@ -571,6 +588,8 @@ public class ChubaoFileSystem extends FileSystem {
         throw new IOException("Unsupport removeAclEntryes: " + path.toString() + ".");
     }
 
+
+
     @Override
     public byte[] getXAttr(Path path, String name) throws IOException {
         throw new IOException("Not implement getXAttr:  " + path.toString() + ".");
@@ -606,7 +625,7 @@ public class ChubaoFileSystem extends FileSystem {
         throw new IOException("Not implement removeXAttrs:  " + path.toString() + ".");
     }
 
-   /* private String validPath(Path path) {
+   private String validPath(Path path) {
         log.info("path:" + path.toString());
         URI pathURI = path.toUri();
         log.info("URI.getPath:" + pathURI.getPath());
@@ -642,10 +661,6 @@ public class ChubaoFileSystem extends FileSystem {
         }
 
         return res;
-    }*/
-
-
-
-
+    }
 
 }

@@ -1,5 +1,6 @@
 package io.chubao.fs.client.stream;
 
+import com.google.common.base.Preconditions;
 import io.chubao.fs.client.sdk.client.CfsFile;
 import io.chubao.fs.client.sdk.exception.CfsEOFException;
 import io.chubao.fs.client.sdk.exception.CfsException;
@@ -7,7 +8,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.ByteBufferPool;
-
+import org.apache.hadoop.classification.InterfaceAudience.Public;
+import org.apache.hadoop.classification.InterfaceStability.Evolving;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -15,8 +17,9 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.EnumSet;
 
-
-public class CfsDataInputStream extends InputStream  implements ByteBufferReadable,HasEnhancedByteBufferAccess,CanUnbuffer{
+@Public
+@Evolving
+public class CfsDataInputStream extends InputStream  implements ByteBufferReadable,HasEnhancedByteBufferAccess,CanUnbuffer,Seekable, PositionedReadable{
     private static final Log log=LogFactory.getLog(CfsDataInputStream.class);
     private CfsFile cFile;
 
@@ -52,6 +55,9 @@ public class CfsDataInputStream extends InputStream  implements ByteBufferReadab
             throw new IOException();
         }
     }
+
+
+
 
     //get position in the file
     public long getPos() throws IOException{
@@ -119,5 +125,39 @@ public class CfsDataInputStream extends InputStream  implements ByteBufferReadab
         }
     }
 
+    @Override
+    public int read(long l, byte[] bytes, int i, int i1) throws IOException {
+        return 0;
+    }
+
+    @Override
+
+    public void readFully(long position, byte[] buffer, int offset, int length) throws IOException {
+        this.validatePositionedReadArgs(position, buffer, offset, length);
+
+        int nbytes;
+        for(int nread = 0; nread < length; nread += nbytes) {
+            nbytes = this.read(position + (long)nread, buffer, offset + nread, length - nread);
+            if (nbytes < 0) {
+                throw new EOFException("End of file reached before reading fully.");
+            }
+        }
+
+    }
+    @Override
+    public void readFully(long position, byte[] buffer) throws IOException {
+        this.readFully(position, buffer, 0, buffer.length);
+    }
+    protected void validatePositionedReadArgs(long position, byte[] buffer, int offset, int length) throws EOFException {
+        Preconditions.checkArgument(length >= 0, "length is negative");
+        if (position < 0L) {
+            throw new EOFException("position is negative");
+        } else {
+            Preconditions.checkArgument(buffer != null, "Null buffer");
+            if (buffer.length - offset < length) {
+                throw new IndexOutOfBoundsException("Requested more bytes than destination buffer size: request length=" + length + ", with offset =" + offset + "; buffer capacity =" + (buffer.length - offset));
+            }
+        }
+    }
 }
 

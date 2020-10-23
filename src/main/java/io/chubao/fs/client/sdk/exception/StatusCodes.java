@@ -44,7 +44,7 @@ public enum StatusCodes {
 
     private StatusCodes(int code) {
         this.code = code;
-        this.msg = "unkown error";
+        this.msg = "unknown error";
     }
 
     private StatusCodes(int code, String msg) {

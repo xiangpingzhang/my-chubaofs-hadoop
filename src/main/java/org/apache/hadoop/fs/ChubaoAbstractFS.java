@@ -52,8 +52,6 @@ public class ChubaoAbstractFS extends AbstractFileSystem{
                 org.apache.hadoop.util.DataChecksum.Type.NULL);
     }
 
-
-
     @Override
     public int getUriDefaultPort() {
         return CfsConfig.CFS_DEFAULT_PORT;
@@ -181,4 +179,5 @@ public class ChubaoAbstractFS extends AbstractFileSystem{
     public void setVerifyChecksum(boolean verifyChecksum) throws AccessControlException, IOException {
         this.verifyCheckSum = verifyChecksum;
     }
+
 }

@@ -6,7 +6,7 @@
 
   <property>
     <name>cfs.volume.name</name>
-    <value>cfstest</value>
+    <value>Itptest</value>
   </property>
 
   <property>

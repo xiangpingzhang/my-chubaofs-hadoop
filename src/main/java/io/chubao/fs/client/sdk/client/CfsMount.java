@@ -14,10 +14,9 @@
 package io.chubao.fs.client.sdk.client;
 
 import com.sun.jna.Native;
-import io.chubao.fs.client.sdk.libsdk.CfsLibrary;
 import io.chubao.fs.client.sdk.libsdk.FileStorage;
 import io.chubao.fs.client.sdk.libsdk.FileStorageImpl;
-import io.chubao.fs.client.sdk.libsdk.StorageConfig;
+import io.chubao.fs.client.config.StorageConfig;
 import io.chubao.fs.client.sdk.exception.CfsException;
 import io.chubao.fs.client.sdk.exception.CfsNullArgumentException;
 import io.chubao.fs.client.sdk.exception.StatusCodes;
@@ -35,7 +34,6 @@ public class CfsMount {
 
     public CfsMount(String libpath) throws CfsException{
         this.sdkLibPath = libpath;
-        System.out.println("sdkLibPath:"+sdkLibPath);
         if (sdkLibPath == null) {
             throw new CfsNullArgumentException("Please specify the libsdk.so path.");
         }
@@ -48,22 +46,14 @@ public class CfsMount {
         if (cid < 0) {
             throw new CfsException("Failed to new a client.");
         }
-        System.out.println("cid:"+cid);
+
     }
 
     public FileStorage openFileStorage(StorageConfig config,CfsMount mnt) throws CfsException {
-
-        System.out.println("------------set client -------------------");
-        System.out.println("mnt.cid:"+mnt.cid);
         libCfs.cfs_set_client(mnt.cid, StorageConfig.CONFIG_KEY_MATSER, config.getMasters());
-        System.out.println("set masterAddr:"+config.getMasters());
         libCfs.cfs_set_client(mnt.cid, StorageConfig.CONFIG_KEY_VOLUME, config.getVolumeName());
-        System.out.println("set VolumeName:"+config.getVolumeName());
         libCfs.cfs_set_client(mnt.cid, StorageConfig.CONFIG_KEY_LOG_DIR, config.getLogDir());
-        System.out.println("set LogDir:"+config.getLogDir());
         libCfs.cfs_set_client(mnt.cid, StorageConfig.CONFIG_KEY_LOG_LEVEL, config.getLogLevel());
-        System.out.println("set logLevel:"+config.getLogLevel());
-        System.out.println("------------set client over----------------");
 
         int st = libCfs.cfs_start_client(mnt.cid);
 

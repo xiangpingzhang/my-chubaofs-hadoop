@@ -11,9 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 // implied. See the License for the specific language governing
 // permissions and limitations under the License.
-package io.chubao.fs.client.sdk.libsdk;
+package io.chubao.fs.client.config;
 
 import io.chubao.fs.client.sdk.exception.CfsNullArgumentException;
+import io.chubao.fs.client.sdk.libsdk.FileStorageImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
