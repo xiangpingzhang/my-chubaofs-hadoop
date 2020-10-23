@@ -38,7 +38,9 @@ public class CfsOwnerHelper {
     }
 
     public int getUid(String user) throws CfsException {
+        System.out.println("user:"+user);
         Integer uid = users.get(user);
+        System.out.println("uid:"+uid);
         if (uid == null) {
             throw new RuntimeException("Not found the user: " + user + " in " + passwdPath);
         }
@@ -55,17 +57,20 @@ public class CfsOwnerHelper {
     }
 
     public int getGid(String group) throws CfsException {
-        Integer uid = users.get(group);
-        if (uid == null) {
+        System.out.println("group:"+group);
+        Integer gid = users.get(group);
+        System.out.println("gid:"+gid);
+        if (gid == null) {
             throw new RuntimeException("Not found the group: " + group + " in " + groupPath);
         }
-        return uid;
+        return gid;
     }
+
 
     public int getGidByUser(String user) throws CfsException {
         Integer uid = userGroups.get(user);
         if (uid == null) {
-            throw new RuntimeException("Not found the group: " + user + " in " + passwdPath);
+            throw new RuntimeException("Not found the group: " + user + " in " + groupPath);
         }
         return uid;
     }
@@ -73,7 +78,7 @@ public class CfsOwnerHelper {
     public String getGroup(int gid) {
         String group = gids.get(Integer.valueOf(gid));
         if (group == null) {
-            log.warn("Not found the uid: " + gid + " in " + passwdPath);
+            log.warn("Not found the uid: " + gid + " in " + groupPath);
             return String.valueOf(gid);
         }
         return group;

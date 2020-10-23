@@ -1,4 +1,4 @@
-package io.chubao.fs.client.sdk.libsdk;
+package io.chubao.fs.client.sdk.client;
 
 import com.sun.jna.Library;
 import com.sun.jna.Pointer;
@@ -169,5 +169,6 @@ public interface CfsLibrary extends Library {
     int cfs_setattr_by_path(long cid, String path, StatInfo info, int valid);
 
     long cfs_file_size(long cid, int fd);
+
 
 }

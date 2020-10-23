@@ -1,21 +1,20 @@
 package io.chubao.fs.client.sdk.client;
 
-import io.chubao.fs.client.sdk.libsdk.CfsLibrary;
 import io.chubao.fs.client.sdk.exception.CfsException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class CfsFileImpl implements CfsFile {
     private static final Log log = LogFactory.getLog(CfsFileImpl.class);
-    private CfsLibrary driver;
+    private CfsLibrary cfsLib;
     private long clientID;
     private long position = 0L;
     private long fileSize;
     private boolean isClosed = false;
     private int fd;
 
-    public CfsFileImpl(CfsLibrary driver, int fd, long fileSize, long position,long cid) {
-        this.driver = driver;
+    public CfsFileImpl(CfsLibrary cfsLib, int fd, long fileSize, long position,long cid) {
+        this.cfsLib = cfsLib;
         this.fd = fd;
         this.fileSize = fileSize;
         this.position = position;
@@ -45,13 +44,13 @@ public class CfsFileImpl implements CfsFile {
             return;
         }
         isClosed = true;
-        driver.cfs_flush(this.clientID,fd);
-        driver.cfs_close(this.clientID,fd);
+        cfsLib.cfs_flush(this.clientID,fd);
+        cfsLib.cfs_close(this.clientID,fd);
     }
 
     @Override
     public void flush() throws CfsException {
-        driver.cfs_flush(this.clientID,fd);
+        cfsLib.cfs_flush(this.clientID,fd);
     }
 
     private byte[] buffCopy(byte[] buff, int off, int len) {
@@ -80,7 +79,7 @@ public class CfsFileImpl implements CfsFile {
     }
 
     private long write(long offset, byte[] data, int len) throws CfsException {
-        return driver.cfs_write(this.clientID,fd, data, len, offset);
+        return cfsLib.cfs_write(this.clientID,fd, data, len, offset);
     }
 
     public synchronized long read(byte[] buff, int off, int len) throws CfsException {
@@ -90,10 +89,10 @@ public class CfsFileImpl implements CfsFile {
 
         long rsize = 0;
         if (off == 0) {
-            rsize = driver.cfs_read(this.clientID,fd,  buff, len,position);
+            rsize = cfsLib.cfs_read(this.clientID,fd,  buff, len,position);
         } else {
             byte[] newbuff = new byte[len];
-            rsize = driver.cfs_read(this.clientID,fd, newbuff, len, position);
+            rsize = cfsLib.cfs_read(this.clientID,fd, newbuff, len, position);
             System.arraycopy(newbuff, 0, buff, off, len);
         }
 
